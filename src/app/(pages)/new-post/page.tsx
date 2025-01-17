@@ -1,10 +1,95 @@
 'use client'
+import { educationLevels, travelRequired } from '@/app/shared/utils/arrayConstants';
 import { useRouter } from 'next/navigation'
-import React from 'react'
-
+import React, { useState } from 'react'
+import jobPostingValidation from './utils/postValidation';
+import { IJobList } from '@/app/shared/utils/types';
+import { showToast } from '@/app/shared/utils/showToast';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export default function NewPost() {
+  const uid = useSelector((state: RootState ) => state.company.company.uid);
   const router = useRouter();
+
+  const initialState = {
+    name: '',
+    postedFrom: 'Web',
+    phoneNumber: '',
+    companyEmail: '',
+    consultType: 'JobPosting',
+    externalLink: '',
+    jComBenefit: '',
+    jDescription: '',
+    jExpectation: '',
+    jMinEducation: 'No education needed',
+    otherEducationRequired: '',
+    jcomBlurb: '',
+    jobType: '',
+    jtravelReq: 'No travel needed',
+    salary: '',
+    status: 'active',
+    photoUrl: '',
+    uid: '',
+    address: '',
+    Company: '',
+  }
+  
+  const [companyData, setCompanyData] = useState<IJobList>(initialState);
+  const [jobTypeArray, setJobTypeArray] = useState<string[]>([]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) => {
+    const {name, value} = e.target;
+    setCompanyData({ ...companyData, [name]:value });
+    console.log('Company data', companyData);
+  };
+
+  const handlechangeJobType = (type: string) => {
+    const exists = jobTypeArray.includes(type);
+    
+    if(exists){
+      const newJobTypeArray = jobTypeArray.filter((item) => (
+        item !== type
+      ))
+      setJobTypeArray(newJobTypeArray);
+    } else {
+      setJobTypeArray([...jobTypeArray, type]);
+    }
+
+    console.log('job type array', jobTypeArray); 
+  }
+
+  const handleSubmit = () => {
+    const {error, message} = jobPostingValidation(companyData);
+
+    if(error){
+      showToast(message, 'error');
+      return;
+    }
+
+    // re arrange data
+    const newJobPosting = {
+      ...companyData,
+      consultType: 'JobPosting',
+      postedFrom: 'Web',
+      datePosted: new Date(),
+      lastEdited: new Date(),
+      status: 'active',
+      viewCount: [],
+      vendor: {
+        Company: companyData.Company,
+        address: companyData.address,
+        uid,
+      }
+    };
+
+    // submit data to database
+    console.log('re-arranged data', newJobPosting);
+    
+
+    // redirect
+    router.push("/home");
+  }
 
   return (
     <div className="min-h-[80vh] flex justify-center  bg-slate-50">
@@ -23,80 +108,214 @@ export default function NewPost() {
             <div className="h-[1px] w-full bg-slate-400 mb-5" />
             <div className="grid 2xl:grid-cols-2 xl:grid-cols-2 grid-cols-1 gap-5">
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
-                <input placeholder="Title" className="border border-slate-400 rounded w-full h-[2.5em] px-3" />
+                <h4 className="mb-1 font-bold text-primary">Job Title <span>*</span></h4>
+                <input 
+                  name="name"
+                  value={companyData.name}
+                  onChange={handleChange}
+                  placeholder="Enter job title" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
               </div>
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
-                <input placeholder="Title" className="border border-slate-400 rounded w-full h-[2.5em] px-3" />
+                <h4 className="mb-1 font-bold text-primary">Company Name <span>*</span></h4>
+                <input 
+                  name="Company"
+                  value={companyData.Company}
+                  onChange={handleChange}
+                  placeholder="Enter company name" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
               </div>
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
-                <input placeholder="Title" className="border border-slate-400 rounded w-full h-[2.5em] px-3" />
+                <h4 className="mb-1 font-bold text-primary">Company Email</h4>
+                <input 
+                  name="companyEmail"
+                  value={companyData.companyEmail}
+                  onChange={handleChange}
+                  placeholder="Enter company email" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
               </div>
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
-                <input placeholder="Title" className="border border-slate-400 rounded w-full h-[2.5em] px-3" />
+                <h4 className="mb-1 font-bold text-primary">Phone No.</h4>
+                <input 
+                  name="phoneNumber"
+                  value={companyData.phoneNumber}
+                  onChange={handleChange}
+                  placeholder="Enter phone number" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
               </div>
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
-                <input placeholder="Title" className="border border-slate-400 rounded w-full h-[2.5em] px-3" />
+                <h4 className="mb-1 font-bold text-primary">Job Location <span>*</span></h4>
+                <input 
+                  name="address"
+                  value={companyData.address}
+                  onChange={handleChange}
+                  placeholder="Enter company address" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
+              </div>
+              <div>
+                <h4 className="mb-1 font-bold text-primary">Salary ($) <span>*</span></h4>
+                <input 
+                  name="salary"
+                  value={companyData.salary}
+                  onChange={handleChange}
+                  placeholder="Enter salary" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
+              </div>
+              <div>
+                <h4 className="mb-1 font-bold text-primary">Application Link</h4>
+                <input 
+                  name="externalLink"
+                  value={companyData.externalLink}
+                  onChange={handleChange}
+                  placeholder="Enter application link" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
+              </div>
+              <div>
+                <h4 className="mb-1 font-bold text-primary">Choose Job Nature</h4>
+                <select
+                 className="border border-slate-400 rounded w-full h-[2.5em] px-3"
+                 name="jtravelReq"
+                 value={companyData.jtravelReq}
+                 onChange={handleChange}
+                >
+                  { travelRequired().map((item) => (
+                    <option
+                    
+                      key={item}
+                      value={item}
+                    >
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <h4 className="mb-1 font-bold text-primary">Min. Education Needed</h4>
+                <select
+                 className="border border-slate-400 rounded w-full h-[2.5em] px-3"
+                 name="jMinEducation"
+                 value={companyData.jMinEducation}
+                 onChange={handleChange}
+                >
+                  { educationLevels().map((item) => (
+                    <option
+                    
+                      key={item}
+                      value={item}
+                    >
+                      {item}
+                    </option>
+                  ))}
+                </select>
+                {
+                  companyData.jMinEducation === 'Other' && (
+                    <input 
+                      placeholder="Please enter educational requirement"
+                      name="otherEducationRequired"
+                      value={companyData.otherEducationRequired}
+                      onChange={handleChange}
+                      className="border border-slate-400 rounded w-full h-[2.5em] px-3 mt-3"
+                    />
+                  )
+                }
               </div>
             </div>
             <div className="py-5">
-              <h4 className="mb-1 font-bold text-primary">Job Title</h4>  
+              <h4 className="mb-1 font-bold text-primary">Job Type</h4>  
               <div className="grid 2xl:flex xl:flex 2xl:flex-row xl:flex-row grid-cols-2 2xl:gap-x-20 xl:gap-x-20 gap-x-5">
                 <div className="flex gap-x-2">
                   <input
                     type="checkbox"
+                    onChange={() => handlechangeJobType('Contract')}
+                    checked={jobTypeArray.includes('Contract')}
                   />  
-                  <h6 className="font-semibold text-slate-600">title</h6>  
+                  <h6 className="font-semibold text-slate-600">Contract</h6>  
                 </div>  
                 <div className="flex gap-x-2">
                   <input
                     type="checkbox"
+                    onChange={() => handlechangeJobType('Onsite')}
+                    checked={jobTypeArray.includes('Onsite')}
                   />  
-                  <h6 className="font-semibold text-slate-600">title</h6>  
+                  <h6 className="font-semibold text-slate-600">Onsite</h6>  
                 </div>  
                 <div className="flex gap-x-2">
                   <input
                     type="checkbox"
+                    onChange={() => handlechangeJobType('Freelance')}
+                    checked={jobTypeArray.includes('Freelance')}
                   />  
-                  <h6 className="font-semibold text-slate-600">title</h6>  
+                  <h6 className="font-semibold text-slate-600">Freelance</h6>  
                 </div>  
                 <div className="flex gap-x-2">
                   <input
                     type="checkbox"
+                    onChange={() => handlechangeJobType('Full-Time')}
+                    checked={jobTypeArray.includes('Full-Time')}
                   />  
-                  <h6 className="font-semibold text-slate-600">title</h6>  
+                  <h6 className="font-semibold text-slate-600">Full-Time</h6>  
+                </div>  
+                <div className="flex gap-x-2">
+                  <input
+                    type="checkbox"
+                    onChange={() => handlechangeJobType('Part-Time')}
+                    checked={jobTypeArray.includes('Part-Time')}
+                  />  
+                  <h6 className="font-semibold text-slate-600">Part-Time</h6>  
                 </div>  
               </div>
             </div>
             <div className="grid 2xl:grid-cols-2 xl:grid-cols-2 grid-cols-1 gap-5">
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
+                <h4 className="mb-1 font-bold text-primary">Job Description <span>*</span></h4>
                 <textarea
-                  placeholder="Title"
+                  name="jDescription"
+                  value={companyData.jDescription}
+                  onChange={handleChange}
+                  placeholder="Please describe this job" 
                   className="p-3 rounded border border-slate-400 w-full h-[120px]"
                 />
               </div>    
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
+                <h4 className="mb-1 font-bold text-primary">Skills and Technical Requirement <span>*</span></h4>
                 <textarea
-                  placeholder="Title"
+                  name="jExpectation"
+                  value={companyData.jExpectation}
+                  onChange={handleChange}
+                  placeholder="Technical and other expectations from the applicant" 
                   className="p-3 rounded border border-slate-400 w-full h-[120px]"
                 />
               </div>    
               <div>
-                <h4 className="mb-1 font-bold text-primary">Title</h4>
+                <h4 className="mb-1 font-bold text-primary">Compensations and Other Benefits <span>*</span></h4>
                 <textarea
-                  placeholder="Title"
+                  name="jComBenefit"
+                  value={companyData.jComBenefit}
+                  onChange={handleChange}
+                  placeholder="Please give any relevant compensations and Benefits associated with the job" 
+                  className="p-3 rounded border border-slate-400 w-full h-[120px]"
+                />
+              </div>    
+              <div>
+                <h4 className="mb-1 font-bold text-primary">Company Blurb <span>*</span></h4>
+                <textarea
+                  name="jcomBlurb"
+                  value={companyData.jcomBlurb}
+                  onChange={handleChange}
+                  placeholder="Give an overview of your company" 
                   className="p-3 rounded border border-slate-400 w-full h-[120px]"
                 />
               </div>    
             </div>
             <div className="my-5">
-              <button className="font-bold text-white py-2 px-5 rounded bg-primary">
+              <button onClick={handleSubmit} className="font-bold text-white py-2 px-5 rounded bg-primary">
                 Submit
               </button>    
             </div>

@@ -1,14 +1,41 @@
 'use client'
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'
-import { FaEdit } from "react-icons/fa"
-import React from 'react'
+import { useRouter } from 'next/navigation';
+import { FaEdit } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
 import PostCard from '@/app/components/PostCard';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import ProtectedRoute from '@/app/shared/hoc/withProtectedRoute';
+import { ICompanyDataPayload } from '@/app/shared/utils/types';
+import LogoutModal from '@/app/(auth)/components/logoutModal';
 
 export default function Home() {
   const router = useRouter();
+  const initialState = {
+    password: '',
+    size: '',
+    uid: '',
+    name: '',
+    jobListing: [],
+    email: '',
+    image: '',
+    wallpaper: '',
+  }
+
+  const [companyData, setCompanyData] = useState<ICompanyDataPayload>(initialState);
+
+  const { company } = useSelector((state: RootState) => state.company);
+  console.log('companyInfo', company);
+  console.log('companyData', companyData);
+  
+  useEffect(() => {
+    setCompanyData(company);
+  }, []);
 
   return (
+    <ProtectedRoute>
+    <div>  
     <div className="min-h-[80vh] flex justify-center  bg-slate-50">
       <div className="h-auto w-full">
         <div className="h-auto w-full flex justify-center">
@@ -18,7 +45,7 @@ export default function Home() {
                 className="w-full h-full object-cover"
                 width={1500}
                 height={800}
-                src="/images/nudiance_bg.jpg"
+                src={companyData?.image || "/images/nudiance_bg.jpg"}
                 alt="Nudiance background"
               />
               <button className="top-[10px] right-[10px] w-[35px] h-[35px] rounded-full absolute z-10 bg-slate-200 border border-slate-400 flex justify-center items-center">
@@ -28,16 +55,18 @@ export default function Home() {
             <div className="w-full 2xl:h-[150px] xl:h-[150px] h-auto bg-white relative rounded border 2xl:border-slate-200 xl:border-slate-200 border-white">
               <div className="2xl:ms-[240px] xl:ms-[240px] 2xl:mt-[0px] xl:mt-[0px] mt-[50px] h-full flex 2xl:flex-row xl:flex-row flex-col justify-between p-5">
                 <div>
-                  <h6 className="text-2xl font-bold 2xl:text-left xl:text-left text-center">Company Name</h6>
-                  <h6 className="text-lg font-bold 2xl:text-left xl:text-left text-center">Employees</h6>
+                  <h6 className="text-3xl font-bold 2xl:text-left xl:text-left text-center">{companyData.name}</h6>
+                  <h6 className="text-[1.1em] font-bold 2xl:text-left xl:text-left text-center">{companyData.email}</h6>
+                  <h6 className="text-lg font-bold 2xl:text-left xl:text-left text-center">{`Size: ${companyData.size} people`}</h6>
                 </div>
-                <div className="2xl:block xl:block flex justify-center">
+                <div className="2xl:block xl:block flex flex-col items-center">
                   <button
                     onClick={() => router.push('/edit-profile')}
                     className="py-1 px-4 rounded font-semibold bg-gray-200 text-slate-500 2xl:mt-[0px] xl:mt-[0px] mt-[15px]"
                   >
                     Edit Profile
                   </button>
+                  <LogoutModal />
                 </div>
               </div>  
               <div className="absolute 2xl:h-[200px] xl:h-[200px] h-[120px] 2xl:w-[200px] xl:w-[200px] w-[120px] rounded bg-white border-4 border-white 2xl:bottom-[20px] xl:bottom-[20px] 2xl:left-[20px] xl:left-[20px] left-1/2 2xl:top-[unset] xl:top-[unset] top-[-60px] 2xl:transform-none xl:transform-none transform -translate-x-1/2 overflow-hidden">
@@ -45,7 +74,7 @@ export default function Home() {
                   className="w-full h-full object-cover"
                   width={1500}
                   height={800}
-                  src="/images/nudiance_profile_logo2.jpg"
+                  src={companyData?.wallpaper || "/images/nudiance_profile_logo2.jpg"}
                   alt="Nudiance background"
                 />
               </div>    
@@ -100,5 +129,8 @@ export default function Home() {
         </div>
       </div>
     </div>
+    <LogoutModal />
+    </div>
+    </ProtectedRoute>
   )
 }
