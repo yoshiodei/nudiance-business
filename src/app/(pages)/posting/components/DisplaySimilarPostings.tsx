@@ -35,6 +35,9 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
               status: doc.data().status,
               viewCount: doc.data().viewCount,
               jobType: doc.data().jobType,
+              phoneNumber: doc.data().phoneNumber,
+              jtravelReq: doc.data().jtravelReq,
+              jcomBlurb: doc.data().jcomBlurb, 
               vendor: {
                 Company: doc.data().vendor.Company,
                 address: doc.data().vendor.address,
