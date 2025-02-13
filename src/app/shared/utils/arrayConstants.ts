@@ -16,3 +16,12 @@ export const travelRequired = () => [
     'Doctorate',
     'Other',
   ];
+
+  export const numberOfEmployees = () => [
+    '1-50',
+    '51-100',
+    '101-200',
+    '201-500',
+    '501-1000',
+    '1000+',
+  ];

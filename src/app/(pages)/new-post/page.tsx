@@ -2,11 +2,16 @@
 import { educationLevels, travelRequired } from '@/app/shared/utils/arrayConstants';
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { collection, addDoc } from "firebase/firestore"; 
 import jobPostingValidation from './utils/postValidation';
 import { IJobList } from '@/app/shared/utils/types';
 import { showToast } from '@/app/shared/utils/showToast';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { db } from '@/firebase/firebase';
+import { FirebaseError } from "firebase/app";
+import { setSalaryRange } from './utils/setSalaryRange';
+
 
 export default function NewPost() {
   const uid = useSelector((state: RootState ) => state.company.company.uid);
@@ -27,7 +32,8 @@ export default function NewPost() {
     jcomBlurb: '',
     jobType: '',
     jtravelReq: 'No travel needed',
-    salary: '',
+    salaryLower: '',
+    salaryUpper: '',
     status: 'active',
     photoUrl: '',
     uid: '',
@@ -59,23 +65,34 @@ export default function NewPost() {
     console.log('job type array', jobTypeArray); 
   }
 
-  const handleSubmit = () => {
-    const {error, message} = jobPostingValidation(companyData);
+  const handleSubmit = async () => {
+    const jobTypeString = jobTypeArray.join(', ');
+    const {error, message} = jobPostingValidation({...companyData, jobType: jobTypeString});
 
     if(error){
       showToast(message, 'error');
       return;
     }
 
-    // re arrange data
     const newJobPosting = {
-      ...companyData,
+      name: companyData.name,
+      phoneNumber: companyData.phoneNumber,
+      jMinEducation: companyData.jMinEducation === 'Other' ? companyData.otherEducationRequired : companyData.jMinEducation,
+      jExpectation: companyData.jExpectation,
+      jDescription: companyData.jDescription,
+      jComBenefit: companyData.jComBenefit,
+      externalLink: companyData.externalLink,
+      jcomBlurb: companyData. jcomBlurb,
+      jtravelReq: companyData.jtravelReq,
+      companyEmail: companyData.companyEmail,
+      salary: setSalaryRange(companyData?.salaryLower, companyData?.salaryUpper) ,
       consultType: 'JobPosting',
       postedFrom: 'Web',
       datePosted: new Date(),
       lastEdited: new Date(),
       status: 'active',
       viewCount: [],
+      jobType: jobTypeString,
       vendor: {
         Company: companyData.Company,
         address: companyData.address,
@@ -83,12 +100,27 @@ export default function NewPost() {
       }
     };
 
-    // submit data to database
     console.log('re-arranged data', newJobPosting);
-    
 
-    // redirect
-    router.push("/home");
+    try{
+
+      await addDoc(collection(db, "jobList"), newJobPosting);
+
+      showToast('Job posted successfully', 'success');
+      router.push("/home");
+    }
+    catch(err: unknown){
+      if (err instanceof FirebaseError) {
+        // setError(err.message || "An error occurred while registering the user.");
+        showToast((err.message || 'An error occurred while registering the user.'), 'error');
+      } else if (err instanceof Error) {
+        // setError(err.message);
+        showToast(err.message, 'error');
+      } else {
+        // setError("An unknown error occurred.");
+        showToast('An unknown error occurred.', 'error');
+      }
+    }
   }
 
   return (
@@ -160,11 +192,18 @@ export default function NewPost() {
               <div>
                 <h4 className="mb-1 font-bold text-primary">Salary ($) <span>*</span></h4>
                 <input 
-                  name="salary"
-                  value={companyData.salary}
+                  name="salaryLower"
+                  value={companyData.salaryLower}
                   onChange={handleChange}
-                  placeholder="Enter salary" 
+                  placeholder="Enter salary lower range" 
                   className="border border-slate-400 rounded w-full h-[2.5em] px-3" 
+                />
+                <input 
+                  name="salaryUpper"
+                  value={companyData.salaryUpper}
+                  onChange={handleChange}
+                  placeholder="Enter salary upper range" 
+                  className="border border-slate-400 rounded w-full h-[2.5em] px-3 mt-3" 
                 />
               </div>
               <div>

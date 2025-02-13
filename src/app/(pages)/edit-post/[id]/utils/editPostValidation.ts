@@ -1,25 +1,25 @@
-import { IJobList } from "@/app/shared/utils/types";
+import { IEditPostJobList } from "@/app/shared/utils/types";
 
-const jobPostingValidation = (jobObject: IJobList) => {
+const editPostValidation = (jobObject: IEditPostJobList) => {
     const {
       name,
+      Company,
       phoneNumber,
-      jComBenefit,
-      jDescription,
-      jExpectation,
-      jcomBlurb,
-      jMinEducation,
-      otherEducationRequired,
-      jobType,
-      salaryLower,
-      salaryUpper,
       companyEmail,
       address,
-      Company,
+      salaryUpperRange,
+      salaryLowerRange,
+      jMinEducation,
+      otherEducationRequired,
+      jobTypeArray,
+      jDescription,
+      jComBenefit,
+      jExpectation,
+      jcomBlurb,
     } = jobObject;
   
     if(
-      !name.trim() || !jComBenefit.trim() || !jDescription.trim() || !jExpectation.trim() || !jcomBlurb.trim() || !jobType.trim() || !salaryLower?.trim() || !salaryUpper?.trim() || !address.trim() || !Company.trim()
+      !name.trim() || !jComBenefit.trim() || !jDescription.trim() || !jExpectation.trim() || !jcomBlurb.trim() || !salaryLowerRange?.trim() || !salaryUpperRange?.trim() || !address.trim() || !Company.trim() || !jobTypeArray.length
     ){
       console.log('fields left empty', jobObject);
       return {error: true, message: "Required fields cannot be left empty"}
@@ -37,11 +37,11 @@ const jobPostingValidation = (jobObject: IJobList) => {
       return {error: true, message: "Email entered is not valid"}
     }
 
-    if(!RegExp(/^-?\d+(\.\d+)?$/).test(salaryUpper.trim()) && !RegExp(/^-?\d+(\.\d+)?$/).test(salaryLower.trim())) {
+    if(!RegExp(/^-?\d+(\.\d+)?$/).test(salaryUpperRange.trim()) && !RegExp(/^-?\d+(\.\d+)?$/).test(salaryLowerRange.trim())) {
       return {error: true, message: "Salary entered is not a number"}
     }
 
-    if(salaryLower > salaryUpper) {
+    if(salaryLowerRange > salaryUpperRange) {
       return {error: true, message: "Salary lower range must be less than higher range"}
     }
 
@@ -50,4 +50,4 @@ const jobPostingValidation = (jobObject: IJobList) => {
     }
 }; 
 
-export default jobPostingValidation;
+export default editPostValidation;

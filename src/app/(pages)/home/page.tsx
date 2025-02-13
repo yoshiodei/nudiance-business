@@ -1,17 +1,18 @@
 'use client'
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { FaEdit } from "react-icons/fa";
+// import { FaEdit } from "react-icons/fa";
 import React, { useEffect, useState } from 'react';
-import PostCard from '@/app/components/PostCard';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import ProtectedRoute from '@/app/shared/hoc/withProtectedRoute';
 import { ICompanyDataPayload } from '@/app/shared/utils/types';
 import LogoutModal from '@/app/(auth)/components/logoutModal';
 
+import TabContainer from './components/TabContainer';
+
 export default function Home() {
-  const router = useRouter();
+
   const initialState = {
     password: '',
     size: '',
@@ -22,8 +23,11 @@ export default function Home() {
     image: '',
     wallpaper: '',
   }
-
+  
   const [companyData, setCompanyData] = useState<ICompanyDataPayload>(initialState);
+  const [tab, setTab] = useState<string>('all-post');
+
+  const router = useRouter();
 
   const { company } = useSelector((state: RootState) => state.company);
   console.log('companyInfo', company);
@@ -45,12 +49,12 @@ export default function Home() {
                 className="w-full h-full object-cover"
                 width={1500}
                 height={800}
-                src={companyData?.image || "/images/nudiance_bg.jpg"}
+                src={companyData?.wallpaper || "/images/nudiance_bg.jpg"}
                 alt="Nudiance background"
               />
-              <button className="top-[10px] right-[10px] w-[35px] h-[35px] rounded-full absolute z-10 bg-slate-200 border border-slate-400 flex justify-center items-center">
+              {/* <button className="top-[10px] right-[10px] w-[35px] h-[35px] rounded-full absolute z-10 bg-slate-200 border border-slate-400 flex justify-center items-center">
                 <FaEdit className="font-[1.2em] text-slate-400" />
-              </button>
+              </button> */}
             </div>
             <div className="w-full 2xl:h-[150px] xl:h-[150px] h-auto bg-white relative rounded border 2xl:border-slate-200 xl:border-slate-200 border-white">
               <div className="2xl:ms-[240px] xl:ms-[240px] 2xl:mt-[0px] xl:mt-[0px] mt-[50px] h-full flex 2xl:flex-row xl:flex-row flex-col justify-between p-5">
@@ -61,7 +65,7 @@ export default function Home() {
                 </div>
                 <div className="2xl:block xl:block flex flex-col items-center">
                   <button
-                    onClick={() => router.push('/edit-profile')}
+                    onClick={() => router.push(`/edit-profile/${companyData.uid}`)}
                     className="py-1 px-4 rounded font-semibold bg-gray-200 text-slate-500 2xl:mt-[0px] xl:mt-[0px] mt-[15px]"
                   >
                     Edit Profile
@@ -74,7 +78,7 @@ export default function Home() {
                   className="w-full h-full object-cover"
                   width={1500}
                   height={800}
-                  src={companyData?.wallpaper || "/images/nudiance_profile_logo2.jpg"}
+                  src={companyData?.image || "/images/nudiance_profile_logo2.jpg"}
                   alt="Nudiance background"
                 />
               </div>    
@@ -87,49 +91,36 @@ export default function Home() {
 
               <div className="2xl:max-w-full xl:max-w-full max-w-[280px] overflow-auto scrollbar-hide">
                 <div className="flex gap-x-5">
-                  <button className="p-2 rounded hover:bg-slate-100 hover:text-primary w-[150px] text-nowrap bg-slate-50">
-                    <h5 className="font-bold text-slate-500">My Job Postings</h5>
+                  <button 
+                    onClick={() => setTab('all-post')}
+                    className={`p-2 rounded hover:bg-primary hover:text-white ${tab === 'all-post' ? 'bg-primary text-white' : 'text-slate-500 bg-slate-50'} w-[150px] text-nowrap transition-all`}
+                  >
+                    <h5 className="font-bold transition-all">Job Postings</h5>
                   </button>
-                  <button className="p-2 rounded hover:bg-slate-100 w-[150px] text-nowrap bg-slate-50">
-                    <h5 className="font-bold text-slate-500">All Job Posting</h5>
+                  <button
+                    onClick={() => setTab('active-post')}
+                    className={`p-2 rounded hover:bg-primary hover:text-white ${tab === 'active-post' ? 'bg-primary text-white' : 'text-slate-500 bg-slate-50'} w-[150px] text-nowrap transition-all`}
+                  >
+                    <h5 className="font-bold transition-all">Active Posts</h5>
                   </button>
-                  <button className="p-2 rounded hover:bg-slate-100 w-[120px] text-nowrap bg-slate-50">
-                    <h5 className="font-bold text-slate-500">Analytics</h5>
+                  <button
+                    onClick={() => setTab('inactive-post')}
+                    className={`p-2 rounded hover:bg-primary hover:text-white ${tab === 'inactive-post' ? 'bg-primary text-white' : 'text-slate-500 bg-slate-50'} w-[150px] text-nowrap transition-all`}
+                  >
+                    <h5 className="font-bold transition-all">Inactive Posts</h5>
                   </button>
                 </div>
               </div>
 
               <div className="h-[1px] w-full bg-slate-400 my-4" />
-              <div>
-                <div className="mb-5 flex justify-center">
-                  <div className="flex 2xl:flex-row xl:flex-row flex-col 2xl:w-[700px] xl:w-[700px] w-full gap-3 h-auto">
-                    <input 
-                      className="h-[2.4em] 2xl:px-5 xl:px-5 px-3 2xl:flex-1 xl:flex-1 rounded border border-slate-300"
-                      placeholder="Search Post"
-                    />
-                    <button 
-                      onClick={() => router.push('/new-post')}
-                      className="h-[2.4em] rounded 2xl:w-[120px] xl:w-[120px] w-full bg-primary text-white font-bold"
-                    >
-                      + New Post
-                    </button>
-                  </div>
-                </div>
-                <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 grid-cols-1 gap-3">
-                  <PostCard />
-                  <PostCard />
-                  <PostCard />
-                  <PostCard />
-                  <PostCard />
-                  <PostCard />
-                </div>
-              </div>
+
+              <TabContainer tab={tab} />
+
             </div>
           </div>
         </div>
       </div>
     </div>
-    <LogoutModal />
     </div>
     </ProtectedRoute>
   )

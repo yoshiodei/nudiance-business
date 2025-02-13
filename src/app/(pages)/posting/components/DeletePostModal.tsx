@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Modal, initTWE } from "tw-elements";
-import useLogout from "../hooks/useLogout";
 import Loader from "@/app/shared/components/Loader";
+import useDeletePost from "../hooks/useDeletePost";
 initTWE({ Modal });
 
-const LogoutModal = () => {
-  const { logout, loading } = useLogout();
+const DeletePostModal = ({ id }: {id: string}) => {
+  const { deletePost, loading } = useDeletePost();
 
   useEffect(() => {
     const init = async () => {
@@ -16,9 +16,8 @@ const LogoutModal = () => {
   }, []);
 
 
-
-  const handleLogout = async () => {
-    await logout(); 
+  const handleDelete = async () => {
+    await deletePost(id); 
 
     const modalElement = document.getElementById("exampleModal");
     if (modalElement) {
@@ -31,17 +30,19 @@ const LogoutModal = () => {
     }
   };
 
+
   return (
     <>
-    <button
+    <button 
       type="button"
-      className="py-1 px-4 font-semibold text-red-500 2xl:mt-[0px] xl:mt-[0px] mt-[8px]"
       data-twe-toggle="modal"
       data-twe-target="#exampleModal"
       data-twe-ripple-init
-      data-twe-ripple-color="light">
-        Logout
-    </button>
+      data-twe-ripple-color="light"
+      className="rounded 2xl:p-2 xl:p-2 p-1 border border-red-500 text-white bg-red-500 2xl:w-[100px] xl:w-[100px] w-full"
+    >
+      Delete
+    </button> 
 
     <div
       data-twe-modal-init
@@ -60,7 +61,7 @@ const LogoutModal = () => {
         <h5
           className="text-xl font-medium leading-normal text-surface dark:text-white"
           id="exampleModalLabel">
-          Confirm Logout
+          Confirm Delete
         </h5>
         <button
           type="button"
@@ -84,7 +85,7 @@ const LogoutModal = () => {
       </div>
 
       <div className="relative flex-auto p-4" data-twe-modal-body-ref>
-        Are you sure you want to log out?
+        Are you sure you want to delete this post?
       </div>
 
       <div
@@ -99,12 +100,12 @@ const LogoutModal = () => {
         </button>
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={handleDelete}
           className="ms-1 inline-block rounded bg-red-500 text-white px-6 pb-2 pt-2.5 text-xs font-medium leading-normal"
           data-twe-ripple-init
           disabled={loading}
           data-twe-ripple-color="light">
-           {loading? <Loader /> : 'Logout'}
+           {loading? <Loader /> : 'Delete'}
         </button>
       </div>
     </div>
@@ -114,4 +115,4 @@ const LogoutModal = () => {
   );
 };
 
-export default LogoutModal;
+export default DeletePostModal;

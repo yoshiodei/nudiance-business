@@ -27,7 +27,7 @@ const findCompanyByEmailAndPassword = async (email: string, password: string): P
       name: companyData.name,
       size: companyData.size,
       email: companyData.email,
-      jobListing: companyData?.jobListing || [],
+      // jobListing: companyData?.jobListing || [],
       password: companyData.password,
       image: companyData?.image || '',
       wallpaper: companyData?.wallpaper || '',
