@@ -19,15 +19,15 @@ const DeletePostModal = ({ id }: {id: string}) => {
   const handleDelete = async () => {
     await deletePost(id); 
 
-    const modalElement = document.getElementById("exampleModal");
-    if (modalElement) {
-      const modalInstance = Modal.getInstance(modalElement);
-      if (modalInstance) {
-        modalInstance.hide();
-      } else {
-        console.error("Modal instance not found");
-      }
-    }
+    // const modalElement = document.getElementById("exampleModal");
+    // if (modalElement) {
+      // const modalInstance = Modal.getInstance(modalElement);
+    //   if (modalInstance) {
+    //     modalInstance.hide();
+    //   } else {
+    //     console.error("Modal instance not found");
+    //   }
+    // }
   };
 
 

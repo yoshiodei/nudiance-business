@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Modal, initTWE } from "tw-elements";
-import useLogout from "../hooks/useLogout";
-import Loader from "@/app/shared/components/Loader";
+// import useLogout from "../hooks/useLogout";
+// import Loader from "@/app/shared/components/Loader";
 initTWE({ Modal });
 
 const LogoutModal = () => {
-  const { logout, loading } = useLogout();
+  // const { logout, loading } = useLogout();
 
   useEffect(() => {
     const init = async () => {
@@ -15,20 +15,18 @@ const LogoutModal = () => {
     init();
   }, []);
 
-
-
   const handleLogout = async () => {
-    await logout(); 
+    // await logout(); 
 
-    const modalElement = document.getElementById("exampleModal");
-    if (modalElement) {
-      const modalInstance = Modal.getInstance(modalElement);
-      if (modalInstance) {
-        modalInstance.hide();
-      } else {
-        console.error("Modal instance not found");
-      }
-    }
+    // const modalElement = document.getElementById("exampleModal");
+    // if (modalElement) {
+    //   const modalInstance = Modal.getInstance(modalElement);
+    //   if (modalInstance) {
+    //     modalInstance.hide();
+    //   } else {
+    //     console.error("Modal instance not found");
+    //   }
+    // }
   };
 
   return (
@@ -102,9 +100,9 @@ const LogoutModal = () => {
           onClick={handleLogout}
           className="ms-1 inline-block rounded bg-red-500 text-white px-6 pb-2 pt-2.5 text-xs font-medium leading-normal"
           data-twe-ripple-init
-          disabled={loading}
+          // disabled={loading}
           data-twe-ripple-color="light">
-           {loading? <Loader /> : 'Logout'}
+           {/* {loading? <Loader /> : 'Logout'} */}
         </button>
       </div>
     </div>
