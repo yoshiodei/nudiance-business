@@ -108,7 +108,7 @@ export default function Posting() {
 
   useEffect(() => {
     loadFetch();
-  }, [loadFetch]);
+  }, []);
 
   // if(!loading && !jobPostData?.name){
   //   return (

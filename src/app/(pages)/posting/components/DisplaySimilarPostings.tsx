@@ -73,7 +73,7 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
 
     useEffect(() => {
       loadSimilarJobs();
-    }, [loadSimilarJobs]);  
+    }, []);  
 
   if(loading){
     return (
