@@ -21,10 +21,13 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
             const jodData = {
               id: '',
               name: doc.data().name,
+              phoneNumber: doc.data().phoneNumber,
+              jtravelReq: doc.data().jtravelReq,
               jMinEducation: doc.data().jMinEducation,
               jExpectation: doc.data().jExpectation,
               jDescription: doc.data().jDescription,
               jComBenefit: doc.data().jComBenefit,
+              jcomBlurb: doc.data().jcomBlurb,
               externalLink: doc.data().externalLink,
               companyEmail: doc.data().companyEmail,
               consultType: doc.data().consultType,
@@ -35,9 +38,6 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
               status: doc.data().status,
               viewCount: doc.data().viewCount,
               jobType: doc.data().jobType,
-              phoneNumber: doc.data().phoneNumber,
-              jtravelReq: doc.data().jtravelReq,
-              jcomBlurb: doc.data().jcomBlurb, 
               vendor: {
                 Company: doc.data().vendor.Company,
                 address: doc.data().vendor.address,
