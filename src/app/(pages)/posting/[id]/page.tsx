@@ -7,7 +7,7 @@ import { db } from '@/firebase/firebase';
 import { FirebaseError } from "firebase/app";
 import { showToast } from '@/app/shared/utils/showToast';
 import { IJobPost } from '@/app/shared/utils/types';
-import DisplaySimilarPostings from '../components/DisplaySimilarPostings';
+// import DisplaySimilarPostings from '../components/DisplaySimilarPostings';
 import DeletePostModal from '../components/DeletePostModal';
 
 export default function Posting() {
@@ -259,7 +259,7 @@ export default function Posting() {
               <h6 className="text-lg font-semibold">Other postings</h6>
             </div>
             <div className="2xl:my-5 xl:my-5 my-2 bg-slate-300 h-[1px]" />
-            { jobPostData?.name && (<DisplaySimilarPostings id={id} />)}
+            {/* { jobPostData?.name && (<DisplaySimilarPostings id={id} />)} */}
           </div>
         </div>
       </div>

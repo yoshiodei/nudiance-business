@@ -44,6 +44,7 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
                 uid: doc.data().vendor.uid,
               }
             };
+            
             jobList.push({...jodData, id: doc.id});
           });
 
