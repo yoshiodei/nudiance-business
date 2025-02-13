@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import companyReducer from './slices/companySlice';
-import counterReducer from './slices/counterSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer } from 'redux-persist';
 
@@ -13,7 +12,6 @@ const persistedReducer = persistReducer(persistConfig, companyReducer);
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     company: persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>

@@ -35,7 +35,7 @@ export default function Home() {
   
   useEffect(() => {
     setCompanyData(company);
-  }, []);
+  }, [company]);
 
   return (
     <ProtectedRoute>

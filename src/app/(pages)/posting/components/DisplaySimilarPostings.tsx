@@ -44,7 +44,7 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
                 uid: doc.data().vendor.uid,
               }
             };
-            
+
             jobList.push({...jodData, id: doc.id});
           });
 
@@ -73,7 +73,7 @@ export default function DisplaySimilarPostings({id}: {id: string}) {
 
     useEffect(() => {
       loadSimilarJobs();
-    }, []);  
+    }, [loadSimilarJobs]);  
 
   if(loading){
     return (
