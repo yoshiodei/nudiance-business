@@ -32,7 +32,6 @@ const DeletePostModal = ({ id }: {id: string}) => {
     }
   };
 
-
   return (
     <>
     <button 

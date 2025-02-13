@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { initializeFirestore, persistentLocalCache } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database';
-import { getAnalytics } from 'firebase/analytics';
+// import { getAnalytics } from 'firebase/analytics';
 
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,11 +16,10 @@ export const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
-
 export const auth = getAuth(app);
 export const database = getDatabase(app);
 export const storage = getStorage(app);
-export const analytics = getAnalytics(app);
+// export const analytics = getAnalytics(app);
 
 // export const db = getFirestore(app);
 
