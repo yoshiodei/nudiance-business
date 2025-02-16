@@ -41,7 +41,7 @@ const jobPostingValidation = (jobObject: IJobList) => {
       return {error: true, message: "Salary entered is not a number"}
     }
 
-    if(salaryLower > salaryUpper) {
+    if(Number(salaryLower) > Number(salaryUpper)) {
       return {error: true, message: "Salary lower range must be less than higher range"}
     }
 
