@@ -9,6 +9,7 @@ const nextConfig = {
           },
         ],
       },
+      output: "standalone",
       reactStrictMode: true,
       pageExtensions: [
         "page.tsx",
